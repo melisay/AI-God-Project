@@ -1,0 +1,8 @@
+# Ignore API keys & sensitive info
+.env
+config/config.py
+
+# Ignore logs & generated files
+logs/*.json
+static/cached_responses/
+__pycache__/

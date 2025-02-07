@@ -1,0 +1,7 @@
+flask
+twilio
+openai
+elevenlabs
+vosk
+pyaudio
+requests
