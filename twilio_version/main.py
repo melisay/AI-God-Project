@@ -2,14 +2,13 @@ import time
 import threading
 import hashlib
 import random
-
-from twilio_version.config import app, debug_log, preload_responses, idle_mode_manager, free_port, generate_tts_streaming, WELCOME_FILE, stop_playback
-# from twilio_version.config import WAKE_UP_WORDS, INTERRUPT_KEYWORDS, CACHE_DIR
-# from twilio_version.chatgpt_handler import get_random_response, IDLE_RESPONSES, WAKEUP_RESPONSES
-# from twilio_version.cache_logging import generate_tts_streaming
-# from twilio_version.app_setup import listen_to_user
-# from twilio_version.vosk_recognition import debug_log
-# from twilio_version.user_input_handler import idle_mode, exit_program, idle_mode_manager
+from twilio_version.config import WAKE_UP_WORDS, INTERRUPT_KEYWORDS, DYNAMIC_KEYWORDS, IDLE_TIMEOUT, SLEEP_INTERVAL
+from twilio_version.tts import generate_tts_streaming
+from twilio_version.speech_recognition import listen_to_user
+from twilio_version.logging import debug_log
+from twilio_version.idle_manager import idle_mode, exit_program, idle_mode_manager, stop_playback
+from twilio_version.utils import free_port, preload_fallback, preload_responses, WELCOME_FILE
+from twilio_version.flask_app import app
 
 if __name__ == "__main__":
     try:

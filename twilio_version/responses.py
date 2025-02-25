@@ -84,8 +84,6 @@ MOTIVATIONAL_QUOTES = [
     "Hard work pays off. But so does procrastination, just not in the same way."
 ]
 
-
-
 # Function to get a random response
 def get_random_response(response_pool):
     return random.choice(response_pool)
