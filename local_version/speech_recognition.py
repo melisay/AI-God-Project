@@ -3,14 +3,14 @@ import time
 import json
 import pyaudio
 import speech_recognition as sr
+import hashlib
 from vosk import KaldiRecognizer
-from .config import VOSK_MODEL, idle_mode, stop_playback, exit_program
+from .config import VOSK_MODEL, stop_playback, exit_program, CACHE_DIR, INTERRUPT_KEYWORDS
+from .tts import generate_tts_streaming, get_chatgpt_response
 from .logging import debug_log
 
-# Add missing imports and variables
-import hashlib
-from .config import CACHE_DIR, INTERRUPT_KEYWORDS
-from .tts import generate_tts_streaming, get_chatgpt_response
+stop_playback.clear()  # Ensure interruption flag resets
+exit_program.clear()  # Ensure exit flag resets
 
 def listen_to_user():
     """Listen for user input using the Vosk model with the correct microphone device."""
@@ -26,14 +26,15 @@ def listen_to_user():
 
     p.terminate()
 
+    # If no valid device is found, use system default mic
     if not valid_devices:
-        debug_log("No valid input devices found!")
-        return "", 0.0
-
-    # Automatically select the first valid input device
-    device_index = valid_devices[0]  # Use the first valid microphone
+        debug_log("No valid input devices found! Defaulting to system microphone.")
+        device_index = None  # System default mic
+    else:
+        device_index = valid_devices[0]
 
     recognizer = KaldiRecognizer(VOSK_MODEL, 16000)
+    recognizer.SetWords(True)  # Enable word-level recognition for better accuracy
     audio = pyaudio.PyAudio()
     stream = audio.open(
         format=pyaudio.paInt16,
@@ -66,43 +67,42 @@ def listen_to_user():
         stream.close()
         audio.terminate()
 
-# Updated: interruption
 def listen_for_interruptions():
     """
     Continuously listens for interruption keywords during AI playback.
     Pauses playback and transitions back to the conversational flow seamlessly.
     """
-    global stop_playback
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         try:
             recognizer.adjust_for_ambient_noise(source, duration=0.1)
             while not exit_program.is_set():
-                # audio = recognizer.listen(source, timeout=2, phrase_time_limit=3)
-                audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
-                user_input = recognizer.recognize_google(audio).lower()
-                if any(keyword in user_input for keyword in INTERRUPT_KEYWORDS):
-                    debug_log(f"Interruption detected: '{user_input}'")
-                    stop_playback.set()
-                    
-                    # Clear current playback and TTS
-                    os.system("pkill mpg123")
-                    generate_tts_streaming("Alright, stopping. What's on your mind?")
-                    
-                    # Listen for new input
-                    new_input = listen_to_user().strip().lower()
-                    if new_input:
-                        debug_log(f"Processing user input after interruption: '{new_input}'")
-                        response = get_chatgpt_response(new_input)
-                        generate_tts_streaming(response)
-                    break
-        except sr.WaitTimeoutError:
-            debug_log("No interruption detected: Timeout.")
+                try:
+                    audio = recognizer.listen(source, timeout=3, phrase_time_limit=5)
+                    user_input = recognizer.recognize_google(audio).lower()
+                    if any(keyword in user_input for keyword in INTERRUPT_KEYWORDS):
+                        debug_log(f"Interruption detected: '{user_input}'")
+                        stop_playback.set()
+
+                        # Clear current playback and TTS
+                        os.system("pkill mpg123")
+                        generate_tts_streaming("Alright, stopping. What's on your mind?")
+
+                        # Listen for new input
+                        new_input, _ = listen_to_user()
+                        if new_input:
+                            debug_log(f"Processing user input after interruption: '{new_input}'")
+                            response = get_chatgpt_response(new_input)
+                            generate_tts_streaming(response)
+                        break
+                except sr.WaitTimeoutError:
+                    debug_log("No interruption detected within timeout.")
+                    return
         except sr.UnknownValueError:
             debug_log("Interruption error: Unrecognizable input.")
         except Exception as e:
             debug_log(f"Error while listening for interruptions: {e}")
-            
+
 def process_user_input(user_input):
     """
     Processes user input, fetches AI response, and generates TTS.
@@ -124,12 +124,16 @@ def process_user_input(user_input):
     ai_response = get_chatgpt_response(user_input)
     chatgpt_latency = time.time() - chatgpt_start
 
-    # Generate TTS
-    tts_start = time.time()
-    cached_file = generate_tts_streaming(ai_response, cached_file)
-    tts_latency = time.time() - tts_start
+    # Generate TTS only if AI response is valid
+    if ai_response.strip():
+        tts_start = time.time()
+        cached_file = generate_tts_streaming(ai_response, cached_file)
+        tts_latency = time.time() - tts_start
+    else:
+        debug_log("ChatGPT returned an empty response, skipping caching.")
+        tts_latency = 0.0
 
-    # Return the generated file instead of playing it again**
+    # Log interaction latencies
     total_latency = time.time() - total_start
     debug_log("Processed user input with detailed latencies.", {
         "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),

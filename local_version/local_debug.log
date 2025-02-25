@@ -1,0 +1,70 @@
+2025-02-25 17:37:20 DEBUG: DEBUG: System booted. Behold, your divine AI overlord is ready to judge.
+2025-02-25 17:37:20 DEBUG: DEBUG: Setting up microphones and sound devices. Oh joy, another audio drama incoming.
+2025-02-25 17:37:21 DEBUG: TTS saved to /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/dynamic_8ca67c03039dd326f1674773b902b34c.mp3. Latency: 1.19 seconds
+2025-02-25 17:37:21 DEBUG: Playing audio: mpg123 -o coreaudio /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/dynamic_8ca67c03039dd326f1674773b902b34c.mp3
+2025-02-25 17:37:27 DEBUG: Device 0: DELL U2415 (Input Channels: 0)
+2025-02-25 17:37:27 DEBUG: Device 1: DELL U2415 (Input Channels: 0)
+2025-02-25 17:37:27 DEBUG: Device 2: Nips iPhone Microphone (Input Channels: 1)
+2025-02-25 17:37:27 DEBUG: Device 3: USB audio CODEC (Input Channels: 0)
+2025-02-25 17:37:27 DEBUG: Device 4: USB audio CODEC (Input Channels: 1)
+2025-02-25 17:37:27 DEBUG: Device 5: BlackHole 2ch (Input Channels: 2)
+2025-02-25 17:37:27 DEBUG: Device 6: MacBook Pro Microphone (Input Channels: 1)
+2025-02-25 17:37:27 DEBUG: Device 7: MacBook Pro Speakers (Input Channels: 0)
+2025-02-25 17:37:27 DEBUG: Device 8: Microsoft Teams Audio (Input Channels: 2)
+2025-02-25 17:37:27 DEBUG: Listening for user input on device 2.
+2025-02-25 17:37:29 DEBUG: Recognized text: the your me
+2025-02-25 17:37:32 DEBUG: No interruption detected within timeout.
+2025-02-25 17:37:32 DEBUG: User Said: 'the your me'
+2025-02-25 17:37:32 DEBUG: ChatGPT response latency: 0.56 seconds
+2025-02-25 17:37:33 DEBUG: TTS saved to /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_ee58c67f9f466f1f50c2c481cf5469b7.mp3. Latency: 0.72 seconds
+2025-02-25 17:37:33 DEBUG: Playing audio: mpg123 -o coreaudio /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_ee58c67f9f466f1f50c2c481cf5469b7.mp3
+2025-02-25 17:37:36 DEBUG: TTS generated and cached for: the your me
+2025-02-25 17:37:37 DEBUG: TTS saved to /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_ee58c67f9f466f1f50c2c481cf5469b7.mp3. Latency: 0.95 seconds
+2025-02-25 17:37:37 DEBUG: Playing audio: mpg123 -o coreaudio /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_ee58c67f9f466f1f50c2c481cf5469b7.mp3
+2025-02-25 17:37:40 DEBUG: Completed interaction with absolute latency metrics.
+{
+    "Timestamp": "2025-02-25 17:37:40",
+    "Message": "Processed user input with detailed latencies.",
+    "User Said": "the your me",
+    "GOD Said": "I think you may need to proofread that sentence.",
+    "Cached File": "/Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_ee58c67f9f466f1f50c2c481cf5469b7.mp3",
+    "Latencies": {
+        "ChatGPT Latency (s)": 0.56,
+        "TTS Latency (s)": 3.56,
+        "Playback Latency (s)": 3.97,
+        "Total Processing Latency (s)": 19.73
+    }
+}
+2025-02-25 17:37:40 DEBUG: Device 0: DELL U2415 (Input Channels: 0)
+2025-02-25 17:37:40 DEBUG: Device 1: DELL U2415 (Input Channels: 0)
+2025-02-25 17:37:40 DEBUG: Device 2: Nips iPhone Microphone (Input Channels: 1)
+2025-02-25 17:37:40 DEBUG: Device 3: USB audio CODEC (Input Channels: 0)
+2025-02-25 17:37:40 DEBUG: Device 4: USB audio CODEC (Input Channels: 1)
+2025-02-25 17:37:40 DEBUG: Device 5: BlackHole 2ch (Input Channels: 2)
+2025-02-25 17:37:40 DEBUG: Device 6: MacBook Pro Microphone (Input Channels: 1)
+2025-02-25 17:37:40 DEBUG: Device 7: MacBook Pro Speakers (Input Channels: 0)
+2025-02-25 17:37:40 DEBUG: Device 8: Microsoft Teams Audio (Input Channels: 2)
+2025-02-25 17:37:40 DEBUG: Listening for user input on device 2.
+2025-02-25 17:37:42 DEBUG: Recognized text: me
+2025-02-25 17:37:45 DEBUG: No interruption detected within timeout.
+2025-02-25 17:37:45 DEBUG: User Said: 'me'
+2025-02-25 17:37:45 DEBUG: ChatGPT response latency: 0.28 seconds
+2025-02-25 17:37:46 DEBUG: TTS saved to /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_71a33ce946d73a9c84533db53348f046.mp3. Latency: 0.52 seconds
+2025-02-25 17:37:46 DEBUG: Playing audio: mpg123 -o coreaudio /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_71a33ce946d73a9c84533db53348f046.mp3
+2025-02-25 17:37:47 DEBUG: TTS generated and cached for: me
+2025-02-25 17:37:47 DEBUG: TTS saved to /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_71a33ce946d73a9c84533db53348f046.mp3. Latency: 0.39 seconds
+2025-02-25 17:37:47 DEBUG: Playing audio: mpg123 -o coreaudio /Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_71a33ce946d73a9c84533db53348f046.mp3
+2025-02-25 17:37:49 DEBUG: Completed interaction with absolute latency metrics.
+{
+    "Timestamp": "2025-02-25 17:37:49",
+    "Message": "Processed user input with detailed latencies.",
+    "User Said": "me",
+    "GOD Said": "Yes, my child?",
+    "Cached File": "/Users/nipsvanmctitsky/AI-God-Project/static/cached_responses/cached_71a33ce946d73a9c84533db53348f046.mp3",
+    "Latencies": {
+        "ChatGPT Latency (s)": 0.28,
+        "TTS Latency (s)": 1.97,
+        "Playback Latency (s)": 1.68,
+        "Total Processing Latency (s)": 8.91
+    }
+}

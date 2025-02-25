@@ -2,23 +2,25 @@ import os
 import time
 import hashlib
 import requests
-from .config import ELEVENLABS_API_KEY, current_voice, CACHE_DIR
+import subprocess
+from .config import ELEVENLABS_API_KEY, current_voice, CACHE_DIR, cache_lock, chatgpt_cache, set_cache
 from .logging import debug_log
-from .config import openai, cache_lock, chatgpt_cache, set_cache
-
+from openai import ChatCompletion
 
 MAX_CACHE_SIZE = 100  # Limit to 100 items
 
-def set_cache(key, value):
-    """
-    Sets a value in the cache, respecting the cache size limit.
-    """
-    with cache_lock:
-        if len(chatgpt_cache) >= MAX_CACHE_SIZE:
-            # Remove the oldest item (FIFO eviction)
-            chatgpt_cache.pop(next(iter(chatgpt_cache)))
-        chatgpt_cache[key] = value
-        
+def stop_audio():
+    """Stops any currently playing audio before starting new playback."""
+    subprocess.run(["pkill", "-9", "mpg123"], check=False)
+
+def play_audio(filename):
+    """Plays an audio file using subprocess instead of os.system."""
+    try:
+        subprocess.run(["mpg123", "-o", "coreaudio", filename], check=True)
+    except subprocess.CalledProcessError as e:
+        debug_log(f"Audio playback failed: {e}")
+
+
 def generate_tts_streaming(text, filename=None):
     """
     Generates text-to-speech audio using ElevenLabs and plays it using CoreAudio.
@@ -50,7 +52,10 @@ def generate_tts_streaming(text, filename=None):
 
             playback_command = f"mpg123 -o coreaudio {filename}"
             debug_log(f"Playing audio: {playback_command}")
-            os.system(playback_command)  # Ensure playback runs synchronously
+
+            # **Ensure playback only happens if file exists**
+            if os.path.exists(filename):
+                os.system(playback_command)
 
             return filename
         else:
@@ -68,7 +73,6 @@ personality_prompts = {
         "No more than 10 words, prioritizing sarcasm and humor over depth."
     )
 }
-
 
 def get_chatgpt_response(prompt, dynamic=False):
     """
@@ -88,7 +92,7 @@ def get_chatgpt_response(prompt, dynamic=False):
 
     try:
         start_time = time.time()
-        response = openai.ChatCompletion.create(
+        response = ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": personality_prompts.get("john_oliver", "You are an AI.")},
@@ -104,8 +108,10 @@ def get_chatgpt_response(prompt, dynamic=False):
         ai_response = response["choices"][0]["message"]["content"]
 
         # Cache response only for non-dynamic prompts
-        if not dynamic:
+        if not dynamic and ai_response.strip():
             set_cache(cache_key, ai_response)
+        else:
+            debug_log("ChatGPT returned an empty response, skipping caching.")
 
         return ai_response
     except Exception as e:

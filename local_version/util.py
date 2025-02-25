@@ -1,50 +1,40 @@
 import random
 import os
 import time
+import hashlib
+from .logging import debug_log
+from .responses import IMPRESSION_RESPONSES, EASTER_EGGS, MOTIVATIONAL_QUOTES, COMPLIMENTS, SONG_RESPONSES, LIGHTNING_SOUNDS
+from .tts import generate_tts_streaming
+from .config import VOICE_TOM, VOICE_NIKKI, current_voice, CACHE_DIR
 
-# Define missing variables
-IMPRESSION_RESPONSES = ["Impression 1", "Impression 2"]
-EASTER_EGGS = {"egg1": "Easter Egg Response 1", "egg2": "Easter Egg Response 2"}
-MOTIVATIONAL_QUOTES = ["Quote 1", "Quote 2"]
-COMPLIMENTS = ["Compliment 1", "Compliment 2"]
-SONG_RESPONSES = ["Song Response 1", "Song Response 2"]
-LIGHTNING_SOUNDS = ["sound1.mp3", "sound2.mp3"]
-VOICE_TOM = "Tom"
-VOICE_NIKKI = "Nikki"
+############################### Validate Cache Response ###############################
 
-def debug_log(message):
-    print(message)
+# Validate Cache Response
+def validate_cache(user_input, cached_file):
+    cache_key = hashlib.md5(f"{user_input}_{current_voice}".encode()).hexdigest()
+    expected_file = os.path.join(CACHE_DIR, f"cached_{cache_key}.mp3")
+    return cached_file == expected_file and os.path.exists(cached_file)
 
-def generate_tts_streaming(response):
-    print(f"TTS: {response}")
 
 ############################### Get Random Responses  ###############################
 
-# Function to get a random response
 def get_random_response(response_pool):
-    return random.choice(response_pool)
+    return random.choice(response_pool) if response_pool else "No response available."
 
-
-############################### Get Random Impression ###############################
-
-# Get Handle Impressiong
+############################### Handle Impressions ###############################
 
 def get_random_impression():
     response = random.choice(IMPRESSION_RESPONSES)
     debug_log(f"Random impression chosen: {response}")
     return response
 
-############################### Handle Impression  ###############################
-
-# Get Handle Impressiong
 def handle_impression():
     response = random.choice(IMPRESSION_RESPONSES)
     generate_tts_streaming(response)
     debug_log(f"Impression: {response}")
 
-############################### Easter Egg ###############################
+############################### Handle Easter Eggs ###############################
 
-#easter egg
 def handle_easter_egg_request(user_input):
     response = EASTER_EGGS.get(user_input, None)
     if response:
@@ -53,25 +43,22 @@ def handle_easter_egg_request(user_input):
         return True
     return False
 
-############################### Inspiration ###############################
+############################### Handle Motivation ###############################
 
-#inspireme
 def handle_motivation_request():
     response = random.choice(MOTIVATIONAL_QUOTES)
     debug_log(f"Motivated user: {response}")
     generate_tts_streaming(response)
 
-############################### Compliments ###############################
+############################### Handle Compliments ###############################
 
-#compliments
 def handle_compliment_request():
     response = random.choice(COMPLIMENTS)
     debug_log(f"Gave a compliment: {response}")
     generate_tts_streaming(response)
 
-############################### Greetings ###############################
+############################### Handle Greetings ###############################
 
-#personal greetings
 def handle_greeting():
     current_hour = time.localtime().tm_hour
     if current_hour < 12:
@@ -83,25 +70,26 @@ def handle_greeting():
     debug_log(f"Sent greeting: {greeting}")
     generate_tts_streaming(greeting)
 
-############################### Song Request ###############################
+############################### Handle Song Requests ###############################
 
-# Function to handle singing a song
 def handle_song_request():
     response = random.choice(SONG_RESPONSES)
     generate_tts_streaming(response)
     debug_log(f"Sang a song: {response}")
 
-############################### Random Lightning ###############################
+############################### Play Random Lightning Sound ###############################
 
-# play random lighting
 def play_random_lightning_sound():
-    """Plays a random lightning sound."""
+    """Plays a random lightning sound if mpg123 is installed."""
     sound_file = random.choice(LIGHTNING_SOUNDS)
-    os.system(f"mpg123 --quiet {sound_file}")
-        
+    
+    if os.system("which mpg123 > /dev/null") == 0:
+        os.system(f"mpg123 --quiet {sound_file}")
+    else:
+        debug_log("mpg123 not found. Unable to play sound.")
+
 ############################### Switch Voices ###############################
 
-# Get Switch Voices
 def switch_voice(user_input):
     global current_voice
     # if "major tom" in user_input:

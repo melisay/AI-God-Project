@@ -84,8 +84,18 @@ MOTIVATIONAL_QUOTES = [
     "Hard work pays off. But so does procrastination, just not in the same way."
 ]
 
-
-
 # Function to get a random response
 def get_random_response(response_pool):
-    return random.choice(response_pool)
+    """
+    Returns a random response from the given pool.
+    If the pool is empty, returns a default message.
+    """
+    return random.choice(response_pool) if response_pool else "No response available."
+
+# Function to fetch an Easter egg response
+def get_easter_egg_response(user_input):
+    """
+    Returns an Easter egg response if the input matches a key in EASTER_EGGS.
+    Otherwise, returns None.
+    """
+    return EASTER_EGGS.get(user_input, None)

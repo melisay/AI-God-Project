@@ -7,6 +7,10 @@ from .config import DEBUG, LOG_FILE
 # Ensure the log directory exists
 os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
 
+# Ensure log file exists
+if not os.path.exists(LOG_FILE):
+    open(LOG_FILE, "a").close()
+
 # Create a logger
 logger = logging.getLogger("app_logger")
 logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
@@ -26,9 +30,10 @@ formatter = logging.Formatter(
 file_handler.setFormatter(formatter)
 console_handler.setFormatter(formatter)
 
-# Add handlers to the logger
-logger.addHandler(file_handler)
-logger.addHandler(console_handler)
+# Prevent duplicate handlers
+if not logger.hasHandlers():
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
 def debug_log(message, structured_data=None):
     """
@@ -40,9 +45,11 @@ def debug_log(message, structured_data=None):
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
 
     if structured_data:
-        # Format structured data for logging
-        formatted_data = json.dumps(structured_data, indent=4)
-        log_message = f"{timestamp} DEBUG: {message}\n{formatted_data}"
+        try:
+            formatted_data = json.dumps(structured_data, indent=4)
+            log_message = f"{timestamp} DEBUG: {message}\n{formatted_data}"
+        except Exception as e:
+            log_message = f"{timestamp} DEBUG: {message} (Structured data logging failed: {e})"
     else:
         log_message = f"{timestamp} DEBUG: {message}"
 
