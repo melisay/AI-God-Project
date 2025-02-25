@@ -1,14 +1,8 @@
-# logging_utils.py
 import os
 import time
 import json
 import logging
-from config.config import LOG_FILE  # Import LOG_FILE from config
-
-############################### Debug Logging ###############################
-
-DEBUG = True
-LOG_FILE = "/Users/nipsvanmctitsky/phonegod/local_debug.log"
+from .config import DEBUG, LOG_FILE
 
 # Ensure the log directory exists
 os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
@@ -36,7 +30,6 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-
 def debug_log(message, structured_data=None):
     """
     Logs messages and optionally structures data like JSON.
@@ -44,7 +37,6 @@ def debug_log(message, structured_data=None):
         message (str): The primary log message.
         structured_data (dict): Additional structured data to log as JSON.
     """
-    log_file = "/Users/nipsvanmctitsky/phonegod/local_debug.log"
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
 
     if structured_data:
@@ -54,7 +46,7 @@ def debug_log(message, structured_data=None):
     else:
         log_message = f"{timestamp} DEBUG: {message}"
 
-    with open(log_file, "a") as log:
+    with open(LOG_FILE, "a") as log:
         log.write(log_message + "\n")
 
     print(log_message)  # Immediate feedback

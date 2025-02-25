@@ -3,7 +3,7 @@ import time
 import hashlib
 import requests
 from .config import ELEVENLABS_API_KEY, current_voice, CACHE_DIR
-from .logging import debug_log
+from .cache_logging import debug_log
 
 def generate_tts_streaming(text, filename=None):
     """

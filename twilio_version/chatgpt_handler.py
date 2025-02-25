@@ -1,9 +1,7 @@
-## ai.py
 import openai
-from config.config import OPENAI_API_KEY
-
-
-############################### Define Personality ############################### 
+import hashlib
+import time
+from .cache_logging import set_cache, debug_log, chatgpt_cache
 
 # Personality prompt
 current_mode = "john_oliver"
@@ -13,9 +11,6 @@ personality_prompts = {
         "No more than 10 words, prioritizing sarcasm and humor over depth."
     )
 }
-
-
-############################### ChatGPT Response ###############################
 
 def get_chatgpt_response(prompt, dynamic=False):
     """
